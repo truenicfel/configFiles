@@ -1,0 +1,5 @@
+# Clion directory
+.idea
+
+# Build directories
+build*
