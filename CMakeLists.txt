@@ -24,7 +24,8 @@ printGitRepoInfo(${toml11_SOURCE_DIR})
 message(STATUS "Done fetching content.")
 
 add_subdirectory(configuration)
+add_subdirectory(tomlParser)
 
 add_executable(configFiles main.cpp)
 
-target_link_libraries(configFiles PRIVATE toml11::toml11)
+target_link_libraries(configFiles PRIVATE toml11::toml11 configuration)

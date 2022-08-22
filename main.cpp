@@ -1,6 +1,8 @@
 #include <iostream>
 #include <toml.hpp>
+#include <memory>
 
+#include "configuration/ConfigurationParser.h"
 
 int main() {
 
@@ -13,6 +15,9 @@ int main() {
     v["super"] = "super";
     tableTop.at("test") = v;
     std::cout << tableTop << std::endl;
+
+    std::unique_ptr<toml::value> megaTest(new toml::value(toml::parse("filename.toml")));
+    std::make_unique<toml::value>(toml::parse("filename.toml"));
 //    std:: cout << data << std::endl;
 //
 //    // Create and open a text file
