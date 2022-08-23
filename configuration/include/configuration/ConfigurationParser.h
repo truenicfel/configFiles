@@ -2,6 +2,7 @@
 
 #include <string>
 #include <optional>
+#include <chrono>
 
 namespace configFiles {
 
@@ -22,15 +23,15 @@ namespace configFiles {
     public:
 
         /**
-         * Get integer by key from config file.
+         * Get long by key from config file.
          *
          * @param key the key in the config file
          * @param group the group the key is in (optional)
          * @return
          */
-        virtual int getInteger(
+        virtual int64_t getLong(
                 const std::string& key,
-                const std::optional<std::string>& group = std::nullopt) = 0;
+                const std::optional<std::string>& group) = 0;
 
         /**
          * Get double by key from config file.
@@ -41,7 +42,7 @@ namespace configFiles {
          */
         virtual double getDouble(
                 const std::string& key,
-                const std::optional<std::string>& group = std::nullopt) = 0;
+                const std::optional<std::string>& group) = 0;
         /**
          * Get string by key from config file.
          *
@@ -51,7 +52,23 @@ namespace configFiles {
          */
         virtual std::string getString(
                 const std::string& key,
-                const std::optional<std::string>& group = std::nullopt) = 0;
+                const std::optional<std::string>& group) = 0;
+
+        /**
+         * Get time_point by key from config file.
+         *
+         * @param key the key in the config file
+         * @param group the group the key is in (optional)
+         * @return
+         */
+        virtual std::chrono::time_point<std::chrono::system_clock> getTimePoint(
+                const std::string& key,
+                const std::optional<std::string>& group) = 0;
+
+        virtual void setTimePoint(
+                const std::string& key,
+                const std::optional<std::string>& group,
+                const std::chrono::time_point<std::chrono::system_clock>& timePoint) = 0;
     };
 
 }
