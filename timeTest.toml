@@ -1,0 +1,2 @@
+test = 1
+mytable = {time="23.08.2022 15:50:38",numbers=[1,2,3],text="42",pi=3.1400000000000001,answer=5}

@@ -2,19 +2,19 @@
 
 #include <toml.hpp>
 
-#include <iostream>
+#include <fstream>
 
 namespace configFiles {
 
     struct TOMLParser::TOMLParserMembers {
         toml::value value;
 
-        TOMLParserMembers(const std::string& path)
+        explicit TOMLParserMembers(const std::string& path)
         : value(toml::parse(path))
         {
         }
 
-        TOMLParserMembers(const std::filesystem::path& path)
+        explicit TOMLParserMembers(const std::filesystem::path& path)
         : value(toml::parse(path))
         {
         }
@@ -32,11 +32,6 @@ namespace configFiles {
     };
 
     TOMLParser::TOMLParser(const std::filesystem::path& path)
-    : tomlData(std::make_unique<TOMLParserMembers>(path))
-    {
-    }
-
-    TOMLParser::TOMLParser(const std::string& path)
     : tomlData(std::make_unique<TOMLParserMembers>(path))
     {
     }
@@ -86,23 +81,58 @@ namespace configFiles {
         return stringToTimePoint(timePointAsString);
     }
 
-    void TOMLParser::setTimePoint(const std::string& key, const std::optional<std::string>& group,
-                                  const std::chrono::time_point<std::chrono::system_clock>& timePoint) {
-        std::string timePointAsString = timePointToString(timePoint);
+    void TOMLParser::setString(const std::string& key, const std::optional<std::string>& group, const std::string& value) {
         auto& rootTable = TOMLParserMembers::getRootTable(tomlData).as_table();
         if (group) {
             if (rootTable.contains(group.value())) {
                 toml::table& groupTable = rootTable[group.value()].as_table();
-                groupTable[key] = timePointAsString;
+                groupTable[key] = value;
             } else {
                 toml::table groupTable = {};
-                groupTable[key] = timePointAsString;
+                groupTable[key] = value;
                 rootTable[group.value()] = groupTable;
             }
         } else {
-            rootTable[key] = timePointAsString;
+            rootTable[key] = value;
         }
+    }
 
+    void TOMLParser::setDouble(const std::string& key, const std::optional<std::string>& group, const double& value) {
+        auto& rootTable = TOMLParserMembers::getRootTable(tomlData).as_table();
+        if (group) {
+            if (rootTable.contains(group.value())) {
+                toml::table& groupTable = rootTable[group.value()].as_table();
+                groupTable[key] = value;
+            } else {
+                toml::table groupTable = {};
+                groupTable[key] = value;
+                rootTable[group.value()] = groupTable;
+            }
+        } else {
+            rootTable[key] = value;
+        }
+    }
+
+    void TOMLParser::setLong(const std::string& key, const std::optional<std::string>& group, const int64_t& value) {
+        auto& rootTable = TOMLParserMembers::getRootTable(tomlData).as_table();
+        if (group) {
+            if (rootTable.contains(group.value())) {
+                toml::table& groupTable = rootTable[group.value()].as_table();
+                groupTable[key] = value;
+            } else {
+                toml::table groupTable = {};
+                groupTable[key] = value;
+                rootTable[group.value()] = groupTable;
+            }
+        } else {
+            rootTable[key] = value;
+        }
+    }
+
+    void TOMLParser::setTimePoint(const std::string& key, const std::optional<std::string>& group,
+                                  const std::chrono::time_point<std::chrono::system_clock>& timePoint) {
+        std::string timePointAsString = timePointToString(timePoint);
+        setString(key, group, timePointAsString);
     }
 
     std::string TOMLParser::timePointToString(const std::chrono::time_point<std::chrono::system_clock>& point) {
@@ -121,6 +151,36 @@ namespace configFiles {
         ss >> std::get_time(&t, "%d.%m.%Y %T %Z");
         std::time_t timeT = std::mktime(&t);
         return std::chrono::system_clock::from_time_t(timeT);
+    }
+
+    void TOMLParser::writeToFile(const std::filesystem::path& path) {
+        std::ofstream ofstream;
+        ofstream.open(path);
+        if (ofstream) {
+            ofstream << tomlData->value << std::endl;
+        } else {
+            throw std::runtime_error("File could not be opened!");
+        }
+    }
+
+    std::string TOMLParser::toString() {
+        std::stringstream stringstream;
+        stringstream << tomlData->value;
+        return stringstream.str();
+    }
+
+    void TOMLParser::setBuildInformation(const std::string& version, const std::string& branch,
+                                         const std::string& commitHash) {
+        static const std::string tableName = "buildInfo";
+        auto &rootTable = TOMLParserMembers::getRootTable(tomlData).as_table();
+
+        if (!rootTable.contains(tableName)) {
+            rootTable[tableName] = toml::table({});
+        }
+        toml::table& table = rootTable[tableName].as_table();
+        table["version"] = version;
+        table["branch"] = branch;
+        table["commitHash"] = commitHash;
     }
 
 

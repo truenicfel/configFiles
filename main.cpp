@@ -1,33 +1,45 @@
 #include <iostream>
-#include <toml.hpp>
-#include <memory>
+#include "tomlParser/TOMLParser.h"
 
-#include "configuration/ConfigurationParser.h"
 
 int main() {
 
-    auto data = toml::parse("filename.toml");
+    configFiles::TOMLParser parser("samples/toml/filled.toml");
 
-    toml::value tableTop = toml::get<toml::table>(data);
-    toml::value& table = toml::find(data, "mytable");
+    parser.getString("topLevelString", std::nullopt);
+    parser.getLong("topLevelLong", std::nullopt);
+    parser.getDouble("topLevelDouble", std::nullopt);
+    parser.getTimePoint("topLevelTime", std::nullopt);
 
-    toml::value v{};    // table
-    v["super"] = "super";
-    tableTop.at("test") = v;
-    std::cout << tableTop << std::endl;
+    parser.getString("levelString", "firstLevel");
+    parser.getLong("levelLong", "firstLevel");
+    parser.getDouble("levelDouble", "secondLevel");
+    parser.getTimePoint("levelTime", "secondLevel");
 
-    std::unique_ptr<toml::value> megaTest(new toml::value(toml::parse("filename.toml")));
-    std::make_unique<toml::value>(toml::parse("filename.toml"));
-//    std:: cout << data << std::endl;
-//
-//    // Create and open a text file
-//    std::ofstream MyFile("filename.toml");
+    std::cout << parser.toString() << std::endl;
+
+    parser.setString("topLevelString", std::nullopt, "TLS");
+    parser.setLong("topLevelLong", std::nullopt, 100);
+    parser.setDouble("topLevelDouble", std::nullopt, 1.11);
+    parser.setTimePoint("topLevelTime", std::nullopt, std::chrono::system_clock::now());
+
+    parser.setString("levelString", "firstLevel", "LS");
+    parser.setLong("levelLong", "firstLevel", 200);
+    parser.setDouble("levelDouble", "secondLevel", 2.22);
+    parser.setTimePoint("levelTime", "secondLevel", std::chrono::system_clock::now());
+    
+    parser.writeToFile("samples/toml/filled.toml");
+    
+    // Create and open a text file
+//    std::ofstream MyFile("samples/toml/filename.toml");
 //
 //    // Write to the file
-//    MyFile << toml::format(data, 120, 17);
+//    MyFile << std::setw(120) << data;
 //
 //    // Close the file
 //    MyFile.close();
+//
+//    uint64_t ms = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     return 0;
 }
