@@ -39,6 +39,10 @@ namespace configFiles {
         void setBuildInformation(const std::string &version, const std::string &branch,
                                  const std::string &commitHash) override;
 
+        void setBuildInformation() override;
+
+        void getBuildInformation(std::string& version, std::string& branch, std::string& commitHash) override;
+
         /**
          * Convert the current configuration into a string.
          *

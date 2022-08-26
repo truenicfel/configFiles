@@ -1,8 +1,8 @@
 #include "tomlParser/TOMLParser.h"
 
 #include <toml.hpp>
-
 #include <fstream>
+#include <projectInfo/ProjectInfo.h>
 
 namespace configFiles {
 
@@ -172,7 +172,7 @@ namespace configFiles {
     void TOMLParser::setBuildInformation(const std::string& version, const std::string& branch,
                                          const std::string& commitHash) {
         static const std::string tableName = "buildInfo";
-        auto &rootTable = TOMLParserMembers::getRootTable(tomlData).as_table();
+        auto& rootTable = TOMLParserMembers::getRootTable(tomlData).as_table();
 
         if (!rootTable.contains(tableName)) {
             rootTable[tableName] = toml::table({});
@@ -183,6 +183,26 @@ namespace configFiles {
         table["commitHash"] = commitHash;
     }
 
+    void TOMLParser::setBuildInformation() {
+        setBuildInformation(projectInfo::VERSION, projectInfo::GIT_BRANCH, projectInfo::GIT_HASH);
+    }
+
+    void TOMLParser::getBuildInformation(std::string& version, std::string& branch, std::string& commitHash) {
+        static const std::string tableName = "buildInfo";
+        auto& rootTable = TOMLParserMembers::getRootTable(tomlData).as_table();
+
+        if (rootTable.contains(tableName)) {
+            toml::table& table = rootTable[tableName].as_table();
+            version = table["version"].as_string();
+            branch = table["branch"].as_string();
+            commitHash = table["commitHash"].as_string();
+        } else {
+            version = "";
+            branch = "";
+            commitHash = "";
+        }
+
+    }
 
     TOMLParser::~TOMLParser() = default;
 

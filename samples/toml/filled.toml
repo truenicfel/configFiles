@@ -1,7 +1,7 @@
 topLevelString = "TLS"
 topLevelLong = 100
 topLevelDouble = 1.11
-topLevelTime = "25.08.2022 16:16:57 CEST"
+topLevelTime = "26.08.2022 10:23:30 CEST"
 
 [firstLevel]
 levelString = "LS"
@@ -9,6 +9,11 @@ levelLong = 200
 
 [secondLevel]
 levelDouble = 2.22
-levelTime = "25.08.2022 16:16:57 CEST"
+levelTime = "26.08.2022 10:23:30 CEST"
+
+[buildInfo]
+version = "0.2.0"
+branch = "main"
+commitHash = "8f54f07a0ecd6d553ccdf8a64c68956fe81e7821"
 
 

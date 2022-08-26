@@ -141,6 +141,28 @@ namespace configFiles {
                 const std::string& version,
                 const std::string& branch,
                 const std::string& commitHash) = 0;
+
+        /**
+         * Write information about the build into the configuration.
+         *
+         *
+         * The same information is set as in the parametrized version but
+         * now the information is taken from the generated version information file.
+         * @see setBuildInformation
+         */
+        virtual void setBuildInformation() = 0;
+
+        /**
+         * Read build information from the configuration.
+         *
+         * @param version version [out]
+         * @param branch git branch [out]
+         * @param commitHash git commit hash [out]
+         */
+        virtual void getBuildInformation(
+                std::string& version,
+                std::string& branch,
+                std::string& commitHash) = 0;
     };
 
 }

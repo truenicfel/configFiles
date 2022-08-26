@@ -16,6 +16,11 @@ int main() {
     parser.getDouble("levelDouble", "secondLevel");
     parser.getTimePoint("levelTime", "secondLevel");
 
+    std::string version;
+    std::string branch;
+    std::string hash;
+    parser.getBuildInformation(version, branch, hash);
+
     std::cout << parser.toString() << std::endl;
 
     parser.setString("topLevelString", std::nullopt, "TLS");
@@ -27,7 +32,9 @@ int main() {
     parser.setLong("levelLong", "firstLevel", 200);
     parser.setDouble("levelDouble", "secondLevel", 2.22);
     parser.setTimePoint("levelTime", "secondLevel", std::chrono::system_clock::now());
-    
+
+    parser.setBuildInformation();
+
     parser.writeToFile("samples/toml/filled.toml");
     
     // Create and open a text file
